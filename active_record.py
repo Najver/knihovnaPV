@@ -37,3 +37,13 @@ class ActiveRecord:
         query = f"DELETE FROM {self.table} WHERE id = %s"
         self.db.cursor.execute(query, (record_id,))
         self.db.connection.commit()
+
+    def execute_transaction(self, queries_with_data):
+        try:
+            for query, data in queries_with_data:
+                self.db.cursor.execute(query, data)
+            self.db.connection.commit()
+            print("Transakce byla úspěšně dokončena.")
+        except Exception as e:
+            self.db.connection.rollback()
+            print(f"Transakce selhala: {e}")
