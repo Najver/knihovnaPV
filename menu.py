@@ -1,6 +1,8 @@
 from active_record import ActiveRecord
 from database import Database
 from report import report_books, report_users, report_loans
+from import_data import import_csv, import_json, import_xml
+
 
 def display_main_menu():
     print("\n--- Hlavní menu ---")
@@ -11,8 +13,9 @@ def display_main_menu():
     print("5. Nejvíce půjčované knihy")
     print("6. Uživatelé")
     print("7. Výpůjčky")
-    print("8. Generovat souhrnný report")
-    print("9. Ukončit")
+    print("8. Souhrnný report")
+    print("9. Import dat")
+    print("10. Ukončit")
 
 def display_submenu(table_name):
     print(f"\n--- Menu pro tabulku {table_name} ---")
@@ -30,6 +33,13 @@ def display_report_menu():
     print("1. Report o knihách")
     print("2. Report o uživatelích")
     print("3. Report o výpůjčkách")
+    print("4. Zpět do hlavního menu")
+
+def display_import_menu():
+    print("\n--- Import dat ---")
+    print("1. Import z CSV")
+    print("2. Import z JSON")
+    print("3. Import z XML")
     print("4. Zpět do hlavního menu")
 
 
@@ -161,3 +171,40 @@ def add_vypujcka_with_transaction():
         print("Neplatný vstup, zkuste to znovu.")
     except Exception as e:
         print(f"Chyba: {e}")
+
+def handle_import_menu():
+    tables = ["aktualnivypujcky", "autori", "knihy", "knihy_autori", "nejvicepujcovaneknihy", "uzivatele", "vypujcky"]
+    print("\nDostupné tabulky pro import:")
+    for table in tables:
+        print(f"- {table}")
+
+    while True:
+        print("\n--- Import dat ---")
+        print("1. Import z CSV")
+        print("2. Import z JSON")
+        print("3. Import z XML")
+        print("4. Zpět do hlavního menu")
+
+        choice = input("Vyberte formát pro import (1-4): ")
+
+        if choice in ["1", "2", "3"]:
+            table_name = input("Zadejte název tabulky, do které chcete data importovat: ")
+            if table_name not in tables:
+                print("Chyba: Neplatná tabulka.")
+                continue
+
+            file_path = input("Zadejte cestu k souboru: ")
+
+            if choice == "1":
+                import_csv(table_name, file_path)
+            elif choice == "2":
+                import_json(table_name, file_path)
+            elif choice == "3":
+                import_xml(table_name, file_path)
+
+        elif choice == "4":
+            print("Návrat do hlavního menu.")
+            break
+
+        else:
+            print("Neplatná volba, zkuste to znovu.")
